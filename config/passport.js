@@ -3,6 +3,7 @@ var FacebookStrategy	= require('passport-facebook').Strategy;
 var TwitterStrategy 	= require('passport-twitter').Strategy;
 var GoogleStrategy 		= require('passport-google-oauth').OAuth2Strategy;
 var LinkedInStrategy 	= require('passport-linkedin').Strategy;
+var GithubStrategy 	  = require('passport-github').Strategy;
 
 // load user model that is hooked to mongoose 
 var User 				= require('../app/models/user');
@@ -358,6 +359,77 @@ module.exports = function(passport) {
 
 		})
 	}));
+
+
+
+	// ==========================================
+	// GITHUB ===================================
+	// ==========================================
+	passport.use(new GithubStrategy({
+
+		clientID 				: configAuth.githubAuth.clientID,
+		clientSecret 		: configAuth.githubAuth.clientSecret,
+		callbackURL			: configAuth.githubAuth.callbackURL,
+		passReqToCallback	: true 
+
+	},
+	function(req, token, refreshToken, profile, done) {
+		//async, User.findOne won't fire until we have all our data from Google
+		process.nextTick(function(){
+			console.log(profile);
+			if (!req.user) {
+				User.findOne({ 'github.id' : profile.id }, function(err, user) {
+					if (err)
+						return done(err);
+
+					if (user) {
+						// if a user is found, log them in
+						return done(null, user);
+					} else {
+						// user not found, create new User
+						var newUser = new User();
+
+						// set all relevant information
+						newUser.github.id 				= profile.id;
+						newUser.github.name 	= profile.username;
+						newUser.github.picture 	= profile._json.avatar_url;
+						newUser.github.token 	= token;
+						// newUser.github.email 	= profile.emails[0].value; // pull the first email
+
+						// save the user
+						newUser.save(function(err) {
+							if (err) 
+								throw err;
+							return done(null, newUser);
+						});
+					}
+				});
+			} else {
+				// user found, create add credentials
+				var user = req.user;
+				user.github.id 		= profile.id;
+				user.github.name 	= profile.username;
+				user.github.token 	= token;
+				user.github.picture 	= profile._json.avatar_url;
+				// user.github.email 	= profile.emails[0].value; // pull the first email
+
+				// save the user
+				user.save(function(err) {
+					if (err) 
+						throw err;
+					return done(null, user);
+				});
+			};
+
+		})
+	}));
+
+
+
+
+
+
+
 
 	// ==========================================
 	// LINKEDIN =================================

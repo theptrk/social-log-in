@@ -6,7 +6,7 @@ module.exports = function (app, passport) {
 	// ====================================
 	app.get('/', function (req, res) {
 		res.render('index.ejs'); // load index.ejs file
-	})
+	});
 
 
 	// ====================================
@@ -16,7 +16,7 @@ module.exports = function (app, passport) {
 		// render the page and pass in any flash data if it exists
 		res.render('login.ejs', { message: req.flash('loginMessage') });
 			//'loginMessage' set up in passport config
-	})
+	});
 
 	// process the login form
 	app.post('/login', passport.authenticate('local-login', {
@@ -56,7 +56,7 @@ module.exports = function (app, passport) {
 	// init local -------------------------
 		app.get('/signup', function (req, res) {
 			// render the page and pass in any flash data if it exists
-			res.render('signup.ejs', { message: req.flash('signupMessage')})
+			res.render('signup.ejs', { message: req.flash('signupMessage')});
 		});
 
 		// process the signup form
@@ -107,6 +107,17 @@ module.exports = function (app, passport) {
 		//handle the callback after linkedin has authenticated the user
 		app.get('/auth/linkedin/callback', 
 			passport.authenticate('linkedin', {
+				successRedirect: '/profile', 
+				failureRedirect: '/', 
+			}));
+
+	// init github -------------------------
+		// send to github, gets profile
+		app.get('/auth/github', passport.authenticate('github'));
+
+		//handle the callback after github has authenticated the user
+		app.get('/auth/github/callback', 
+			passport.authenticate('github', {
 				successRedirect: '/profile', 
 				failureRedirect: '/', 
 			}));
@@ -174,6 +185,18 @@ module.exports = function (app, passport) {
 				failureRedirect : '/'
 			}));
 
+	// link github ---------------------------------
+
+		// send to google to do the authentication
+		app.get('/connect/github', passport.authorize('github'));
+
+		// the callback after google has authorized the user
+		app.get('/connect/github/callback',
+			passport.authorize('github', {
+				successRedirect : '/profile',
+				failureRedirect : '/'
+			}));
+
 
 	// =============================================================================
 	// UNLINK ACCOUNTS =============================================================
@@ -223,6 +246,15 @@ module.exports = function (app, passport) {
 	    app.get('/unlink/linkedin', function(req, res) {
 	        var user            = req.user;
 	        user.linkedin.token = undefined;
+	        user.save(function(err) {
+	           res.redirect('/profile');
+	        });
+	    });
+
+	    // unlink github ---------------------------------
+	    app.get('/unlink/github', function(req, res) {
+	        var user            = req.user;
+	        user.github.token = undefined;
 	        user.save(function(err) {
 	           res.redirect('/profile');
 	        });

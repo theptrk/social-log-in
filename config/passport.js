@@ -9,7 +9,7 @@ var GithubStrategy 	  = require('passport-github').Strategy;
 var User 				= require('../app/models/user');
 
 // load your app api keys and secrets 
-var configAuth 			= require('./auth');
+var configAuth 			= require('./private_auth');
 
 // expose this function to our app using module.exports
 // * remember, you were passed passport in server.js

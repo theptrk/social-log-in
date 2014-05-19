@@ -2,10 +2,18 @@ Social Log In
 =========
 Facebook, Twitter, Google, LinkedIn and Local log in capabilities
 
-----
-###User Specific (these files are necessary and missing):###
-    - config/auth.js
-	This file holds 3rd party authorization information and should be formatted as such. A copy has been added called 'private_auth.js'. Fill in the values and change this file to 'auth.js'
+On sign in, a local user is created and saved to mongodb. The social services is then linked to the local user.
+Once the user is logged in there is the choice to link or unlink social services to this user.
 
-	- config/database.js
-	This file holds routing information for the database. MongoHQ and Modulus are choices. A copy has been added called 'private_database.js'. Fill in the values and change this file to 'database.js'
+----
+### API keys ###
+  
+  * config/private_auth.js
+
+  Make sure to keep these keys secret if you decide to fork this repo
+
+### Database ###
+  
+  * config/private_database
+
+	This file holds routing information for the database. MongoHQ and Azure hosted Mongo databases are perfect for this.

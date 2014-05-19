@@ -6,7 +6,7 @@ var mongoose = require('mongoose');
 var passport = require('passport');
 var flash 	 = require('connect-flash');
 
-var configDB = require('./config/database.js');
+var configDB = require('./config/private_database.js');
 
 // configuration ===
 mongoose.connect(configDB.url); // connect our database

@@ -133,6 +133,30 @@
 
 			</div>
 		</div>
+
+		<!-- GITHUB INFORMATION -->
+		<div class="col-sm-6">
+			<div class="well">
+				<h3 class="text-primary"><span class="fa fa-github"></span> Github</h3>
+
+				<!-- check if the user has this token (is the user authenticated with this social account) -->
+				<% if (user.github.token) { %>
+					<p>
+						<strong>id</strong>: <%= user.github.id %><br>
+						<strong>token</strong>: <%= user.github.token %><br>
+						<strong>email</strong>: <%= user.github.email %><br>
+						<strong>name</strong>: <%= user.github.name %> <br>
+						<strong>headline</strong>: <%= user.github.headline %> <br>
+						<strong>picture</strong>: <img src="<%= user.github.picture %>"><br>
+					</p>
+
+					<a href="/unlink/github" class="btn btn-primary">Unlink</a>
+				<% } else { %>
+					<a href="/connect/github" class="btn btn-primary">Connect Github</a>
+				<% } %>
+
+			</div>
+		</div>
 	</div>
 </div>
 </body>

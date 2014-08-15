@@ -1,4 +1,4 @@
-Social Log In
+Social Log In (Express 3)
 =========
 Facebook, Twitter, Google, LinkedIn and Local log in capabilities
 
